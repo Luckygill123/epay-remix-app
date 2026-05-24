@@ -2,7 +2,7 @@
 
 client_id = "98d4057abd8e8ada84a2fb94fce2810d"
 name = "epay-remix-app"
-application_url = "https://epay-remix-app.vercel.app"
+application_url = "https://epay-remix-app.fly.dev"
 embedded = true
 
 [build]
@@ -12,15 +12,15 @@ automatically_update_urls_on_dev = true
 api_version = "2026-07"
 
   [[webhooks.subscriptions]]
-  uri = "https://newspapers-murray-forgot-med.trycloudflare.com/webhooks/app/scopes_update"
+  uri = "https://epay-remix-app.fly.dev/webhooks/app/scopes_update"
   topics = [ "app/scopes_update" ]
 
   [[webhooks.subscriptions]]
-  uri = "https://newspapers-murray-forgot-med.trycloudflare.com/webhooks/app/uninstalled"
+  uri = "https://epay-remix-app.fly.dev/webhooks/app/uninstalled"
   topics = [ "app/uninstalled" ]
 
   [[webhooks.subscriptions]]
-  uri = "https://newspapers-murray-forgot-med.trycloudflare.com/webhooks/orders-paid"
+  uri = "https://epay-remix-app.fly.dev/webhooks/orders-paid"
   topics = [ "orders/paid" ]
 
 [access_scopes]
@@ -30,10 +30,14 @@ optional_scopes = [ ]
 use_legacy_install_flow = false
 
 [auth]
-redirect_urls = [ "https://epay-remix-app.vercel.app" ]
+redirect_urls = [
+  "https://epay-remix-app.fly.dev/auth/callback",
+  "https://epay-remix-app.fly.dev/auth/shopify/callback",
+  "https://epay-remix-app.fly.dev/api/auth/callback"
+]
 
 [app_preferences]
-url = "https://epay-remix-app.vercel.app/auth/callback,https://epay-remix-app.vercel.app/auth/shopify/callback"
+url = "https://epay-remix-app.fly.dev/auth/callback,https://epay-remix-app.vercel.app/auth/shopify/callback"
 
 [product.metafields.app.demo_info]
 type = "single_line_text_field"
