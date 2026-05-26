@@ -1,8 +1,11 @@
+// app/routes/api.test.jsx
+
+import prisma from "../db.server";
+
 export async function loader() {
+  const sessions = await prisma.session.findMany();
+
   return Response.json({
-    apiKey: !!process.env.SHOPIFY_API_KEY,
-    apiSecret: !!process.env.SHOPIFY_API_SECRET,
-    appUrl: process.env.SHOPIFY_APP_URL,
-    scopes: process.env.SCOPES,
+    sessions,
   });
 }

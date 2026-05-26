@@ -25,10 +25,6 @@ function Extension() {
       ?.split("/")
       ?.pop();
 
-  console.log(
-    "ORDER ID:",
-    orderId
-  );
 
 useEffect(() => {
 
@@ -36,63 +32,87 @@ useEffect(() => {
     return;
   }
 
-  const timer = setTimeout(async () => {
 
-    try {
 
-      console.log(
-        "📦 Fetching ePay:",
-        orderId
-      );
+  console.log(
+    "ORDER ID:",
+    orderId
+  );
 
-      const response =
-        await fetch(
-          `https://epay-shopify-app-v1.vercel.app/api/get-order-epay?orderId=${orderId}`
-        );
+ 
 
-      if (!response.ok) {
+  const timer =
+    setTimeout(async () => {
 
-        throw new Error(
-          "API request failed"
-        );
-      }
+      try {
 
-      const json =
-        await response.json();
+        const response =
+          await fetch(
+                `https://epay-remix-app.fly.dev/api/get-order-epay?orderId=${orderId}`
+              )
 
-      console.log(
-        "✅ ePay Data:",
-        json
-      );
+              console.log(
+  "API STATUS:",
+  response,
+  response.status
+);
 
-      if (!json) {
 
-        setError(
-          "Payment data not found"
-        );
+      
+
+        if (!response.ok) {
+
+          throw new Error(
+            `API failed: ${response.status}`
+          );
+        }
+
+        const json =
+          await response.json();
+
+
+
+       if (
+  !json ||
+  !json.RESPONSE
+) {
+
+  console.log(
+    "INVALID EPAY RESPONSE:",
+    json
+  );
+
+  setError(
+    "Payment data not found"
+  );
+
+  setLoading(false);
+
+  return;
+}
+
+        setEpay(json);
 
         setLoading(false);
 
-        return;
+      } catch (err) {
+
+        console.error(
+          "EPAY LOAD ERROR:",
+          err
+        );
+
+        setError(
+          "Failed to load payment info"
+        );
+
+        setLoading(false);
       }
 
-      setEpay(json);
+    }, 9000);
 
-      setLoading(false);
-
-    } catch (err) {
-
-      console.log(err);
-
-      setError(
-        "Failed to load payment info"
-      );
-      setLoading(false);
-    }
-
-  }, 9000);
-
-  return () => clearTimeout(timer);
+  return () =>
+    clearTimeout(timer);
 
 }, [orderId]);
 
@@ -131,24 +151,27 @@ useEffect(() => {
     );
   }
 
-  const { RESPONSE } = epay;
+const RESPONSE =
+  epay?.RESPONSE;
 
-  console.log(
-    "🟢 ePay RESPONSE:",
-    RESPONSE, epay
+
+
+if (!RESPONSE) {
+  return (
+    <s-text>
+      Waiting for ePay response...
+    </s-text>
   );
-  if (
-    RESPONSE?.RESULTTEXT !==
-      "transaction successful" &&
-    RESPONSE?.RESULT !== 0
-  ) {
+}
 
-    return (
-      <s-text>
-        {RESPONSE?.RESULTTEXT}
-      </s-text>
-    );
-  }
+if (Number(RESPONSE?.RESULT) !== 0) {
+  return (
+    <s-text>
+      {RESPONSE?.RESULTTEXT ||
+        "ePay transaction failed"}
+    </s-text>
+  );
+}
 
   
 
